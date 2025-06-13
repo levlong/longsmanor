@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ping Monitor</title>
+    <meta http-equiv="refresh" content="10">
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f9f9f9; }
+        .log { margin-bottom: 8px; }
+        .success { color: green; }
+        .fail { color: red; }
+    </style>
+</head>
+<body>
+<h2>Ping Logs</h2>
+<div th:each="log : ${logs}" class="log" th:classappend="${log.contains('SUCCESS')} ? 'success' : 'fail'">
+    <span th:text="${log}"></span>
+</div>
+</body>
+</html>
