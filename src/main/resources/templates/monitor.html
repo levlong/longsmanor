@@ -5,16 +5,114 @@
     <meta http-equiv="refresh" content="10">
     <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
     <style>
-        body { font-family: Arial; padding: 20px; background: #f9f9f9; }
-        .log { margin-bottom: 8px; }
-        .success { color: green; }
-        .fail { color: red; }
+        /* Reset margin and padding to ensure a clean layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* General body styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fc;
+            color: #4f4f4f;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Main container */
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header style */
+        h2 {
+            text-align: center;
+            font-size: 26px;
+            color: #333;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* Logs container */
+        .logs {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Thêm khoảng cách giữa các log */
+        }
+
+        /* Individual log item */
+        .log {
+            padding: 18px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .log.success {
+            border-left: 6px solid #00c853;
+            background-color: #e7f7e2;
+            margin-top: 10px;
+        }
+
+        .log.fail {
+            border-left: 6px solid #f44336;
+            background-color: #fff3f3;
+            margin-top: 10px;
+        }
+
+        .log span {
+            color: #333;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hiệu ứng hover */
+        .log:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .log.success:hover {
+            background-color: #d0f4d1;
+        }
+
+        .log.fail:hover {
+            background-color: #ffebeb;
+        }
     </style>
 </head>
 <body>
-<h2>Ping Logs</h2>
-<div th:each="log : ${logs}" class="log" th:classappend="${log.contains('SUCCESS')} ? 'success' : 'fail'">
-    <span th:text="${log}"></span>
+
+<div class="container">
+    <h2>Ping Logs</h2>
+    <div th:each="log : ${logs}" class="logs">
+        <div th:classappend="${log.contains('SUCCESS')} ? 'log success' : 'log fail'">
+            <span th:text="${log}"></span>
+        </div>
+    </div>
 </div>
+
 </body>
 </html>
