@@ -1,5 +1,4 @@
 package com.thelong.longsmanor;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,7 @@ public class LongsmanorApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/api/**")
-						.allowedOrigins("http://thelong.xyz")
+						.allowedOrigins("http://thelong.xyz", "http://localhost:5173", "http://localhost:5174")
 						.allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowCredentials(true);
 			}

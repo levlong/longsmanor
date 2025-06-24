@@ -1,7 +1,7 @@
 package com.thelong.longsmanor.controller;
 
-import com.thelong.longsmanor.dto.PingResponse;
-import com.thelong.longsmanor.service.KeepConnection;
+import com.thelong.longsmanor.model.Ping;
+import com.thelong.longsmanor.repository.PingRepository;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class KeepConnectionController {
     
     @Autowired
-    private KeepConnection service;
+    private PingRepository repository;
 
     @GetMapping("/api/monitor")
-    public List<PingResponse> monitor() {
-        return service.getLogs();
+    public List<Ping> monitor() {
+        return repository.findAll();
     }
     
 }
