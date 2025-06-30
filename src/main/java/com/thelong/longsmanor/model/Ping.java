@@ -2,7 +2,9 @@ package com.thelong.longsmanor.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.Id;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Ping {
-    @Id
-    private String id;
+    @MongoId(value = FieldType.OBJECT_ID)
+    private ObjectId _id;
     private String status;
     private String logMessage;
     private LocalDateTime timePinged;
