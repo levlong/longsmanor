@@ -1,32 +1,38 @@
 package com.thelong.longsmanor.controller;
 
+import com.thelong.longsmanor.controller.assembler.PingAssembler;
 import com.thelong.longsmanor.model.Ping;
 import com.thelong.longsmanor.repository.PingRepository;
 
-import lombok.Data;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/api")
-@Data
 public class KeepConnectionController {
 
+    @Autowired
     private PingRepository repository;
+
+    @Autowired
+    private PingAssembler assembler;
 
     /**
      * Get all items
@@ -36,9 +42,7 @@ public class KeepConnectionController {
     @GetMapping("/monitors")
     public CollectionModel<EntityModel<Ping>> all() {
         List<EntityModel<Ping>> pings = repository.findAll().stream()
-                .map(ping -> EntityModel.of(ping,
-                        linkTo(methodOn(KeepConnectionController.class).one(ping.get_id())).withSelfRel(),
-                        linkTo(methodOn(KeepConnectionController.class).all()).withRel("all-logs")))
+                .map(assembler::toModel)
                 .collect(Collectors.toList());
         return CollectionModel.of(pings,
                 linkTo(methodOn(KeepConnectionController.class).all()).withSelfRel());
@@ -53,10 +57,7 @@ public class KeepConnectionController {
     @GetMapping("/monitors/latest")
     public CollectionModel<EntityModel<Ping>> get10() {
         List<EntityModel<Ping>> top10 = repository.findTop10ByOrderByTimePingedDesc().stream()
-                .map(ping -> EntityModel.of(ping,
-                        linkTo(methodOn(KeepConnectionController.class).one(ping.get_id())).withRel("one"),
-                        linkTo(methodOn(KeepConnectionController.class).get10()).withRel("top-10"),
-                        linkTo(methodOn(KeepConnectionController.class).all()).withRel("all-logs")))
+                .map(assembler::toModel)
                 .collect(Collectors.toList());
         return CollectionModel.of(top10,
                 linkTo(methodOn(KeepConnectionController.class).get10()).withSelfRel());
@@ -64,6 +65,7 @@ public class KeepConnectionController {
 
     /**
      * Get n latest items
+     * 
      * @param n
      * @return
      */
@@ -73,9 +75,7 @@ public class KeepConnectionController {
         Pageable pageable = PageRequest.of(0, n, Sort.by("timePinged").descending());
 
         List<EntityModel<Ping>> top10 = repository.findAllByOrderByTimePingedDesc(pageable).stream()
-                .map(ping -> EntityModel.of(ping,
-                        linkTo(methodOn(KeepConnectionController.class).one(ping.get_id())).withRel("one"),
-                        linkTo(methodOn(KeepConnectionController.class).all()).withRel("all-logs")))
+                .map(assembler::toModel)
                 .collect(Collectors.toList());
         return CollectionModel.of(top10,
                 linkTo(methodOn(KeepConnectionController.class).getN(n)).withSelfRel());
@@ -91,9 +91,21 @@ public class KeepConnectionController {
     public EntityModel<Ping> one(@PathVariable ObjectId id) {
         Ping ping = repository.findBy_id(id);
 
-        return EntityModel.of(ping,
-                linkTo(methodOn(KeepConnectionController.class).one(ping.get_id())).withSelfRel(),
-                linkTo(methodOn(KeepConnectionController.class).all()).withRel("all-logs"));
+        return assembler.toModel(ping);
     }
 
+    /**
+     * Get item by date
+     */
+    @GetMapping("/monitors/date")
+    public CollectionModel<EntityModel<Ping>> getByDate(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
+
+        List<EntityModel<Ping>> pings = repository.findByTimePingedBetween(from, to).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return CollectionModel.of(pings,
+                linkTo(methodOn(KeepConnectionController.class).getByDate(from, to)).withSelfRel());
+    }
 }

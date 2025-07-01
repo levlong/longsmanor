@@ -1,5 +1,6 @@
 package com.thelong.longsmanor.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -15,4 +16,5 @@ public interface PingRepository extends MongoRepository<Ping, ObjectId>{
     List<Ping> findTop10ByOrderByTimePingedDesc();
     List<Ping> findAllByOrderByTimePingedDesc(Pageable pageable);
     List<Ping> findTop10ByOrderByTimePinged();
+    List<Ping> findByTimePingedBetween(LocalDateTime from, LocalDateTime to);
 }
