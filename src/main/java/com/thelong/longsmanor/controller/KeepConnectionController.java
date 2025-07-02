@@ -97,7 +97,7 @@ public class KeepConnectionController {
     /**
      * Get item by date
      */
-    @GetMapping("/monitors/date")
+    @GetMapping("/monitors/time")
     public CollectionModel<EntityModel<Ping>> getByDate(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
