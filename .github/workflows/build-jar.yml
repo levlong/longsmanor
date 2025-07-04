@@ -29,3 +29,12 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    - name: Stop old java app
+      run: pkill -f 'java -jar' || true
+
+    - name: Move to working directory
+      run: cp target/*.jar ../apps/
+
+    - name: Start new java app
+      run: nohup java -jar /apps/*.jar > /apps/logs/error.log 2>&1 &
