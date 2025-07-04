@@ -34,7 +34,7 @@ jobs:
       run: pkill -f 'java -jar' || true
 
     - name: Move to working directory
-      run: cp target/*.jar ../apps/
+      run: find -name "*.jar" -print0 | xargs -0 cp -t "/home/thelong/apps/"
 
     - name: Start new java app
-      run: nohup java -jar /apps/*.jar > /apps/logs/error.log 2>&1 &
+      run: nohup java -jar /home/thelong/apps/*.jar > /home/thelong/apps/logs/error.log 2>&1 &
