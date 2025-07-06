@@ -27,11 +27,11 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-
     - name: Stop old java app
       run: pkill -f 'java -jar' || true
+      
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
 
     - name: Move to working directory
       run: find -name "*.jar" -print0 | xargs -0 cp -t "/home/thelong/apps/"
