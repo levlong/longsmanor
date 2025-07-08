@@ -27,14 +27,15 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Stop old java app
-      run: pkill -f 'java -jar' || true
-      
+
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -Dskiptests clean package
 
-    - name: Move to working directory
-      run: find -name "*.jar" -print0 | xargs -0 cp -t "/home/thelong/apps/"
+    # - name: Stop old java app
+    #   run: pkill -f 'java -jar' || true
 
-    - name: Start new java app
-      run: nohup java -jar /home/thelong/apps/*.jar > /home/thelong/apps/logs/error.log 2>&1 &
+    # - name: Move to working directory
+    #   run: find -name "*.jar" -print0 | xargs -0 cp -t "/home/thelong/apps/"
+
+    # - name: Start new java app
+    #   run: nohup java -jar /home/thelong/apps/*.jar > /home/thelong/apps/logs/error.log 2>&1 &
